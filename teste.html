@@ -1,0 +1,63 @@
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+        <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    </head>
+    <body>
+        <div class="col-md-6">
+        <input class="form-control" id="txtNome">
+        <button class="btn btn-success" id="btnSalvar">Salvar</button>
+        </div>
+        <div class="col-md-12">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Id</th>
+                        <th>Nome</th>
+                    </tr>
+                </thead>
+                <tbody>
+
+                </tbody>
+            </table>
+        </div>
+    <script>
+        let idGlobal = 0;
+        function Atualizar(id){
+           idGlobal = id;
+           $.ajax({
+               url:"http://localhost:3000/pessoa/"+id,
+               data:{},
+               success:function(data){
+                   $.each(data, function(i,element){
+                       let nome = element.nome
+                     $("#txtNome").val(nome);
+                   })
+               }
+           })   
+           
+          
+        }
+        $(document).ready(function(){
+            $.ajax({
+                url:"http://localhost:3000/pessoa",
+                data:{},
+                success:function(data){
+                    $.each(data,function(i,element){
+                        $('tbody').append("<tr><td>"+element.Id+"</td><td>"+element.nome+"</td><td><a href='/delete/pessoa/"+element.Id+"'>Deletar</a></td><td><button onClick='Atualizar("+element.Id+")' id='btnAtualiza' class='btn btn-warning'>Atualizar</button></td></tr>");
+                    })
+                }
+            })
+            $("#btnSalvar").click(function(){
+                let valor = $("#txtNome").val();
+                if(idGlobal === 0)
+               window.location = "/inserir/pessoa/"+valor;
+               else{
+                   window.location = "/Atualizar/pessoa/"+valor+"&"+idGlobal;
+               }
+            })
+        })
+    </script>
+    </body>
+</html>
