@@ -3,6 +3,8 @@ const express = require('express');
 var fs = require('fs');
 var app = express();
 const bodyparser = require('body-parser');
+var upload = require('express-fileupload');
+const path = require('path');
 
 app.use(bodyparser.json());
 
@@ -107,5 +109,59 @@ app.get('/',(req,res)=>{
         }
         res.end();
     });
+})
+app.get('/upload',(req,res)=>{
+    res.writeHead(200,{'content-type':'text/html'})
+    fs.readFile('./upload.html',null,(err,data)=>{
+        if(err){
+             res.writeHead(404);
+          res.write('Pagina não encontrada');
+        }else{
+            res.write(data);
+        }
+        res.end();
+    })
+})
+app.use(upload());
+app.get("/",(req,res)=>{
+    res.sendFile(__dirname+"upload.html");
+})
+app.post("/",(req,res)=>{
+    if(req.files){
+        var file = req.files.filename,
+        filename = file.name;
+        file.mv("./uploads/"+filename,(err)=>{
+            if(err){
+                console.log(err);
+            }else{
+                mysqlConnection.query("INSERT INTO FILES (NOME) VALUES ('"+filename+"')");
+            }            
+                res.end();
+       })
+    }    
+})
+app.get('/FILES',(req,res)=>{
+    mysqlConnection.query('SELECT * FROM FILES',(err,rows,fields)=>{
+     if(!err){
+         res.send(rows);
+     }else{
+         console.log(err)
+     }   
+    })
+});
+app.get('/selecionar/:id',(req,res)=>{
+    mysqlConnection.query("SELECT * FROM FILES WHERE ID = ?",[req.params.id],(err,rows,fields)=>{
+        if(!err){
+            res.send(rows);
+        }else{
+            console.log(err);
+        }
+    });
+})
+app.get('/dowload/:nome',(req,res)=>{
+    var file = req.params.nome;
+    var filelocation = path.join("./uploads/",file);
+    console.log(filelocation);
+    res.download(filelocation,file);
 })
 

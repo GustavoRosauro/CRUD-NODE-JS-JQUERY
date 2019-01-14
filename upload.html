@@ -1,0 +1,49 @@
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+        <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    </head>
+    <body>
+        <div class="col-md-6">
+        <form method="post" enctype="multipart/form-data" action="/">
+        <input class="form-control" type="file" name="filename">
+        <button class="btn btn-success" type="submit" value="upload">Enviar</button>
+        </form>
+        <table>
+            <thead class="table">
+                <tr>
+                    <th>Arquivo</th>
+                </tr>
+            </thead>
+            <tbody id="corpo">
+
+            </tbody>
+        </table>
+        </div>
+        <script>
+            function SelecionaArquivo(id){
+                $.ajax({
+                    url:"/selecionar/"+id,
+                    data:{},
+                    success:(data)=>{
+                        $.each(data,(i,element)=>{
+                            window.location = "/dowload/"+element.NOME;
+                        })
+                    }
+                })
+            }
+            $(document).ready(()=>{
+                $.ajax({
+                    url:"/FILES",
+                    data:{},
+                    success:(data)=>{
+                        $.each(data,(i,element)=>{
+                            $('tbody').append('<tr><td>'+element.NOME+'</td><td><button onClick="SelecionaArquivo('+element.ID+')" class="btn btn-danger">Dowload</button></td></tr>');
+                        })
+                    }
+                })
+            })
+        </script>
+    </body>
+</html>

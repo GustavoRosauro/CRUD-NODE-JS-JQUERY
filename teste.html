@@ -8,6 +8,7 @@
         <div class="col-md-6">
         <input class="form-control" id="txtNome">
         <button class="btn btn-success" id="btnSalvar">Salvar</button>
+        <button class="btn btn-warning" id="btnArquivos">Arquivos</button>
         </div>
         <div class="col-md-12">
             <table class="table">
@@ -40,6 +41,7 @@
           
         }
         $(document).ready(function(){
+            window.history.pushState("object or string", "Title", "/    ");
             $.ajax({
                 url:"http://localhost:3000/pessoa",
                 data:{},
@@ -52,10 +54,13 @@
             $("#btnSalvar").click(function(){
                 let valor = $("#txtNome").val();
                 if(idGlobal === 0)
-               window.location = "/inserir/pessoa/"+valor;
+                    window.location = "/inserir/pessoa/"+valor;
                else{
-                   window.location = "/Atualizar/pessoa/"+valor+"&"+idGlobal;
+                    window.location = "/Atualizar/pessoa/"+valor+"&"+idGlobal;
                }
+            })
+            $("#btnArquivos").click(()=>{
+                window.location = "/upload";
             })
         })
     </script>
